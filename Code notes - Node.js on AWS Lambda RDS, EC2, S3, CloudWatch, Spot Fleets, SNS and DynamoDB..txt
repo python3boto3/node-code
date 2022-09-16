@@ -1,0 +1,1347 @@
+AWS Lambda Node.js Contents
+
+01. EC2 launch
+02. EC2 stop
+03. EC2 start
+04. EC2 reboot
+05. EC2 terminate
+06. EC2 Multiple tags
+06. EC2 key pairs create and delete
+08. EC2 regions and AZs
+09. EC2 security groups
+10. EC2 allocate Elastic ip
+11. EC2 release Elastic ip
+12. RDS turn off multi AZ
+13. RDS termination control
+14. RDS stop a mysql db
+15. RDS start a mysql db
+16. RDS delete mysql instance
+17. DynamoDB create table
+18. DynamoDB put item
+19. DynamoDB update
+20. DynamoDB get items with scan
+21. DynamoDB json bulk insert
+22. DynamoDB simple query
+23. DynamoDB complex query
+24. DynamoDB delete item
+25. DynamoDB delete table
+26. Spot instance request by AZ
+27. Spot instance request by Subnet
+28. Spot instance cancel
+29. Spot fleet creation
+30. Spot fleet(modify) scale out
+31. Spot fleet(modify) scale in
+32. Spot fleet deletion 1: full
+33. Spot fleet deletion 2: partial
+34. S3 create bucket - locale specific
+35. S3 create bucket - no locale
+36. S3 list buckets in a region
+37. S3 list objects
+38. S3 delete objects
+39. S3 delete bucket
+40. SNS topic creation
+41. SNS topic deletion
+42. SNS subscriptions add
+43. SNS subscriptions delete
+44. SNS publish
+45. SNS subscribe and publish SMS
+46. SNS with Lambda
+47. Cloudwatch create alarm
+48. Cloudwatch describe alarms
+49. Cloudwatch getMetricstatistics
+50. Cloudwatch setAlarmState
+
+
+  01. EC2 launch
+
+  exports.handler = function(event, context) {
+      // TODO implement
+      const AWS = require('aws-sdk');
+      const ec2 = new AWS.EC2({
+          region: 'us-east-1'
+      });
+      var params = {
+          ImageId: 'ami-0a887e401f7654935',
+          InstanceType: 't2.micro',
+          KeyName: 'surfer',
+          MinCount: 3,
+          MaxCount: 3,
+          SecurityGroupIds: [
+              'default'
+          ],
+          TagSpecifications: [{
+              ResourceType: 'instance',
+              Tags: [{
+                  Key: 'Name',
+                  Value: 'Test1'
+              }]
+          }]
+      };
+      ec2.runInstances(params, function(err, data) {
+          if (err) {
+              console.log(err);
+          } else {}
+      });
+  };
+
+
+  02. EC2 stop
+
+  exports.handler = async (event, context, callback) => {
+      var AWS = require('aws-sdk');
+      // To Do
+      AWS.config.update({
+          region: 'us-east-1'
+      });
+      const ec2 = new AWS.EC2({
+          region: event.instanceRegion
+      });
+      return ec2.stopInstances({
+              InstanceIds: ['i-0ebffbf66be76c6b2']
+          }).promise()
+          .then(() => 'Successfully terminated ${event.instanceId}')
+          .catch(err => console.log(err));
+  };
+  exports.handler = async (event, context, callback) => {
+      var AWS = require('aws-sdk');
+      // To Do
+      AWS.config.update({
+          region: 'us-east-1'
+      });
+      const ec2 = new AWS.EC2({
+          region: event.instanceRegion
+      });
+      return ec2.stopInstances({
+              InstanceIds: ['i-0ebffbf66be76c6b2', 'i-0ba223ce80f2b7338', 'i-0f400e69da42434c7']
+          }).promise()
+          .then(() => 'Successfully terminated ${event.instanceId}')
+          .catch(err => console.log(err));
+  };
+
+
+  03. EC2 start
+
+  exports.handler = async (event, context, callback) => {
+      var AWS = require('aws-sdk');
+      // To Do
+      AWS.config.update({
+          region: 'us-east-1'
+      });
+      const ec2 = new AWS.EC2({
+          region: event.instanceRegion
+      });
+      return ec2.startInstances({
+              InstanceIds: ['i-0ebffbf66be76c6b2']
+          }).promise()
+          .then(() => 'Successfully terminated ${event.instanceId}')
+          .catch(err => console.log(err));
+  };
+  exports.handler = async (event, context, callback) => {
+      var AWS = require('aws-sdk');
+      // To Do
+      AWS.config.update({
+          region: 'us-east-1'
+      });
+      const ec2 = new AWS.EC2({
+          region: event.instanceRegion
+      });
+      return ec2.startInstances({
+              InstanceIds: ['i-0ebffbf66be76c6b2', 'i-0ba223ce80f2b7338', 'i-0f400e69da42434c7']
+          }).promise()
+          .then(() => 'Successfully terminated ${event.instanceId}')
+          .catch(err => console.log(err));
+  };
+
+
+  04. EC2 reboot
+
+  exports.handler = async (event, context, callback) => {
+      var AWS = require('aws-sdk');
+      // To Do
+      AWS.config.update({
+          region: 'us-east-1'
+      });
+      const ec2 = new AWS.EC2({
+          region: event.instanceRegion
+      });
+      return ec2.rebootInstances({
+              InstanceIds: ['i-0ebffbf66be76c6b2']
+          }).promise()
+          .then(() => 'Successfully terminated ${event.instanceId}')
+          .catch(err => console.log(err));
+  };
+
+
+  04 A.Multiple Reboots
+  exports.handler = async (event, context, callback) => {
+      var AWS = require('aws-sdk');
+      // To Do
+      AWS.config.update({
+          region: 'us-east-1'
+      });
+      const ec2 = new AWS.EC2({
+          region: event.instanceRegion
+      });
+      return ec2.rebootInstances({
+              InstanceIds: ['i-0ebffbf66be76c6b2', 'i-0ba223ce80f2b7338', 'i-0f400e69da42434c7']
+          }).promise()
+          .then(() => 'Successfully terminated ${event.instanceId}')
+          .catch(err => console.log(err));
+  };
+
+
+  05. EC2 terminate
+
+  exports.handler = async (event, context, callback) => {
+      var AWS = require('aws-sdk');
+      // To Do
+      AWS.config.update({
+          region: 'us-east-1'
+      });
+      const ec2 = new AWS.EC2({
+          region: event.instanceRegion
+      });
+      return ec2.terminateInstances({
+              InstanceIds: ['i-0ebffbf66be76c6b2']
+          }).promise()
+          .then(() => 'Successfully terminated ${event.instanceId}')
+          .catch(err => console.log(err));
+  };
+
+
+  05. A EC2 terminate multiple EC2s
+
+  exports.handler = async (event, context, callback) => {
+      var AWS = require('aws-sdk');
+      // To Do
+      AWS.config.update({
+          region: 'us-east-1'
+      });
+      const ec2 = new AWS.EC2({
+          region: event.instanceRegion
+      });
+      return ec2.terminateInstances({
+              InstanceIds: ['i-0ebffbf66be76c6b2', 'i-0ba223ce80f2b7338', 'i-0f400e69da42434c7']
+          }).promise()
+          .then(() => 'Successfully terminated ${event.instanceId}')
+          .catch(err => console.log(err));
+  };
+
+
+  06. EC2 Mutiple Tags on multiple machines
+
+  exports.handler = async (event, context, callback) => {
+      const AWS = require('aws-sdk');
+      const ec2 = new AWS.EC2({
+          region: 'us-east-1'
+      });
+      var params = {
+          Resources: [
+              'i-01ddf22404f6f6476',
+              'i-0bca84d4f6ffafa0e',
+              'i-0f8e67e0a436e65e2'
+          ],
+          Tags: [{
+                  Key: 'ENV',
+                  Value: 'Production',
+              },
+              {
+                  Key: 'PMO',
+                  Value: 'RKhan',
+              },
+              {
+                  Key: 'PRJ',
+                  Value: 'PemSoft-v2.4.3'
+              }
+          ],
+          DryRun: false
+      };
+      await ec2.createTags(params).promise();
+  };
+
+
+  07. EC2 key pairs creation and deletion
+
+  Exports.handler = function(event, context) {
+      var AWS = require('aws-sdk');
+      // Set the region
+      AWS.config.update({
+          region: 'us-east-1'
+      });
+      // Create EC2 service object
+      var ec2 = new AWS.EC2({
+          apiVersion: '2016-11-15'
+      });
+      var params = {
+          KeyName: 'surfer'
+      };
+      // Create the key pair
+      ec2.createKeyPair(params, function(err, data) { // created the key
+          if (err) {
+              console.log("Error", err);
+          } else {
+              console.log(JSON.stringify(data));
+          }
+      });
+  };
+  //pause
+  setTimeout(() => {
+      console.log("");
+  }, 30000); // go check the key
+  // Delete the key pair
+  ec2.deleteKeyPair(params, function(err, data) { // deleted the key
+      if (err) {
+          console.log("Error", err);
+      } else {
+          console.log(JSON.stringify(data));
+      }
+  });
+
+
+  08. EC2 regions and AZs
+      .
+  exports.handler = function(event, context) {
+      // Load the AWS SDK for Node.js
+      var AWS = require('aws-sdk');
+      // Set the region
+      AWS.config.update({
+          region: 'af-south-1'
+      });
+      // Create EC2 service object
+      var ec2 = new AWS.EC2({
+          apiVersion: '2016-11-15'
+      });
+      var params = {};
+      // Retrieves all regions/endpoints that work with EC2
+      ec2.describeRegions(params, function(err, data) {
+          if (err) {
+              console.log("Error", err);
+          } else {
+              console.log("Regions: ", data.Regions);
+          }
+      });
+      // Retrieves availability zones only for region of the ec2 service object
+      ec2.describeAvailabilityZones(params, function(err, data) {
+          if (err) {
+              console.log("Error", err);
+          } else {
+              console.log("Availability Zones: ", data.AvailabilityZones);
+          }
+      });
+  };
+
+
+  09. EC2 security groups
+
+  exports.handler = function(event, context) {
+      var AWS = require('aws-sdk');
+      AWS.config.update({
+          region: 'us-east-1'
+      }); // set region
+      var ec2 = new AWS.EC2({
+          apiVersion: '2016-11-15'
+      }); // Create EC2 service object
+      var vpc = 'vpc-5a60eb20'; // Variable to hold the ID of a VPC
+      ec2.describeVpcs(function(err, data) { // Retrieve the ID of a VPC
+          if (err) {
+              console.log("Cannot retrieve a VPC", err);
+          } else {
+              vpc = data.Vpcs[0].VpcId;
+              var paramsSecurityGroup = {
+                  Description: 'RDP_Inbound',
+                  GroupName: 'RDP_Ingress',
+                  VpcId: vpc
+              };
+              ec2.createSecurityGroup(paramsSecurityGroup, function(err, data) {
+                  if (err) {
+                      console.log("Error", err);
+                  } else {
+                      var SecurityGroupId = data.GroupId;
+                      console.log("Success", SecurityGroupId);
+                      var paramsIngress = {
+                          GroupId: 'sg-054ad05bf93640907',
+                          IpPermissions: [{
+                              IpProtocol: "tcp",
+                              FromPort: 3389,
+                              ToPort: 3389,
+                              IpRanges: [{
+                                  "CidrIp": "0.0.0.0/0"
+                              }]
+                          }]
+                      };
+                      ec2.authorizeSecurityGroupIngress(paramsIngress, function(err, data) {
+                          if (err) {
+                              console.log("Error", err);
+                          } else {
+                              console.log("Ingress Successfully Set", data);
+                          }
+                      });
+                  }
+              });
+          }
+      });
+  };
+
+
+  10. Allocate EC2 Elastic IP
+
+  Exports.handler = function(event, context) {
+      var AWS = require('aws-sdk');
+      // Set the region
+      AWS.config.update({
+          region: 'us-east-1'
+      });
+      // Create EC2 service object
+      var ec2 = new AWS.EC2({
+          apiVersion: '2016-11-15'
+      });
+      var paramsAllocateAddress = {
+          Domain: 'vpc'
+      };
+      // Allocate the Elastic IP address
+      ec2.allocateAddress(paramsAllocateAddress, function(err, data) {
+          if (err) {
+              console.log("Address Not Allocated", err);
+          } else {
+              console.log("Address allocated:", data.AllocationId);
+              var paramsAssociateAddress = {
+                  AllocationId: data.AllocationId,
+                  InstanceId: 'i-075455a6f048eca5b'
+              };
+              // Associate the new Elastic IP address with an EC2 instance
+              ec2.associateAddress(paramsAssociateAddress, function(err, data) {
+                  if (err) {
+                      console.log("Address Not Associated", err);
+                  } else {
+                      console.log("Address associated:", data.AssociationId);
+                  }
+              });
+          }
+      });
+  };
+
+
+  11. Release EC2 Elastic IP
+
+  exports.handler = function(event, context) {
+      var AWS = require('aws-sdk');
+      // Set the region
+      AWS.config.update({
+          region: 'us-east-1'
+      });
+      // Create EC2 service object
+      var ec2 = new AWS.EC2({
+          apiVersion: '2016-11-15'
+      });
+      var paramsReleaseAddress = {
+          AllocationId: 'eipalloc-0be78eb139ccc82aa'
+      };
+      // Disassociate the Elastic IP address from EC2 instance
+      ec2.releaseAddress(paramsReleaseAddress, function(err, data) {
+          if (err) {
+              console.log("Error", err);
+          } else {
+              console.log("Address released");
+          }
+      });
+  };
+
+
+  12. RDS turn off multi AZ
+
+  exports.handler = async (event, context, callback) => {
+      var AWS = require("aws-sdk");
+      AWS.config.update({
+          region: "us-east-1"
+      });
+      var rds = new AWS.RDS({
+          apiVersion: '2014-10-31'
+      });
+      var params = {
+          DBInstanceIdentifier: 'RDS-Test-02013',
+          MultiAZ: false, // in reverse, changing the value to true switches it on
+          ApplyImmediately: true
+      };
+      await rds.modifyDBInstance(params).promise();
+  };
+
+
+  13. RDS termination control
+
+  exports.handler = async (event, context, callback) => {
+      var AWS = require("aws-sdk");
+      AWS.config.update({
+          region: "us-east-1"
+      });
+      var rds = new AWS.RDS({
+          apiVersion: '2014-10-31'
+      });
+      var params = {
+          DBInstanceIdentifier: 'RDS-Test-02013',
+          DeletionProtection: false, // in reverse, changing the value to true switches it on
+          ApplyImmediately: true
+      };
+      await rds.modifyDBInstance(params).promise();
+  };
+
+
+  14. RDS stop a mysql db
+
+  exports.handler = async (event, context, callback) => {
+      var AWS = require("aws-sdk");
+      AWS.config.update({
+          region: "us-east-1"
+      });
+      var rds = new AWS.RDS({
+          apiVersion: '2014-10-31'
+      });
+      var params = {
+          DBInstanceIdentifier: 'RDS-Test-02013'
+      };
+      await rds.stopDBInstance(params).promise();
+  };
+
+
+  15. RDS start a mysql db
+
+  exports.handler = async (event, context, callback) => {
+      var AWS = require("aws-sdk");
+      AWS.config.update({
+          region: "us-east-1"
+      });
+      var rds = new AWS.RDS({
+          apiVersion: '2014-10-31'
+      });
+      var params = {
+          DBInstanceIdentifier: 'RDS-Test-02013'
+      };
+      await rds.stopDBInstance(params).promise();
+  };
+
+
+  16. RDS delete mysql instance
+
+  exports.handler = async (event, context, callback) => {
+      var AWS = require("aws-sdk");
+      AWS.config.update({
+          region: "us-east-1"
+      });
+      var rds = new AWS.RDS({
+          apiVersion: '2014-10-31'
+      });
+      var params = {
+          DBInstanceIdentifier: 'RDS-Test-02013',
+          SkipFinalSnapshot: true
+      };
+      await rds.deleteDBInstance(params).promise();
+  };
+
+
+  17. DynamoDB create table
+
+  exports.handler = function(event, context, callback) {
+      var AWS = require("aws-sdk");
+      var region = "us-east-1";
+      AWS.config.update({
+          region: region
+      });
+      var dynamodb = new AWS.DynamoDB() //low-level client
+      var tableName = "MovieTable";
+      var params = {
+          TableName: tableName,
+          KeySchema: [{
+                  AttributeName: "filmYear",
+                  KeyType: "HASH"
+              }, // Partition key
+              {
+                  AttributeName: "title",
+                  KeyType: "RANGE"
+              } // Sort Key
+          ],
+          AttributeDefinitions: [{
+                  AttributeName: "filmYear",
+                  AttributeType: "N"
+              },
+              {
+                  AttributeName: "title",
+                  AttributeType: "S"
+              }
+          ],
+          ProvisionedThroughput: {
+              ReadCapacityUnits: 10,
+              WriteCapacityUnits: 10
+          }
+      };
+      dynamodb.createTable(params, function(err, data) {
+          if (err) {
+              console.error("Unable to create table. Error JSON:", JSON.stringify(err, null, 2));
+          } else {
+              console.log("Created table. Table description JSON:", JSON.stringify(data, null, 2));
+          }
+      });
+  };
+
+
+  18. DynamoDB put item
+
+  exports.handler = function(event, context) {
+      var AWS = require('aws-sdk');
+      // Set the region
+      AWS.config.update({
+          region: 'us-east-1'
+      });
+      // Create the DynamoDB service object
+      var ddb = new AWS.DynamoDB({
+          apiVersion: '2012-08-10'
+      });
+      var params = {
+          TableName: 'MovieTable',
+          Item: {
+              'star': {
+                  S: 'William Shatner'
+              },
+              'genre': {
+                  S: 'Science Fiction'
+              },
+              'title': {
+                  S: 'Star Trek - The Motion Picture'
+              },
+              'filmYear': {
+                  N: '1979'
+              }
+          }
+      };
+      // Call DynamoDB to add the item to the table
+      ddb.putItem(params, function(err, data) {
+          if (err) {
+              console.log("Error", err);
+          } else {
+              console.log("Success", data);
+          }
+      });
+  };
+
+
+  19. DynamoDB update
+
+  exports.handler = function(event, context, callback) {
+      var AWS = require('aws-sdk');
+      AWS.config.update({
+          region: 'us-east-1'
+      });
+      var docClient = new AWS.DynamoDB.DocumentClient({
+          apiVersion: '2012-08-10'
+      });
+      var params = {
+          TableName: 'MovieTable',
+          Key: {
+              "filmYear": 2019,
+              "title": "The Silence"
+          },
+          UpdateExpression: "set genre = :g",
+          ExpressionAttributeValues: {
+              ":g": "Horror"
+          },
+          ReturnValues: "UPDATED_NEW"
+      };
+      docClient.update(params, function(err, data) {
+          if (err) {
+              console.log("Error", err);
+          } else {
+              console.log("Success", data);
+          }
+      });
+  };
+
+
+  20. DynamoDB get items with scan
+
+  exports.handler = async (event, context, callback) => {
+      'use strict';
+      const AWS = require('aws-sdk');
+      // Set the region
+      AWS.config.update({
+          region: 'us-east-1'
+      });
+      // Create the DynamoDB service object
+      const ddb = new AWS.DynamoDB.DocumentClient();
+      const params = {
+          TableName: 'MovieTable',
+          Key: {
+              'genre': 'Science Fiction'
+          },
+          ProjectionExpression: 'star,title'
+      };
+      const data = await ddb.scan(params).promise();
+      return data.Items;
+  };
+
+
+  21. DynamoDB json bulk insert
+
+      [See text in book]
+
+
+  22. DynamoDB simple query
+
+  exports.handler = async (event, context, callback) => {
+      var AWS = require("aws-sdk");
+      AWS.config.update({
+          region: "us-east-1"
+      });
+      var docClient = new AWS.DynamoDB.DocumentClient();
+      console.log("Querying for movies from 1990 - titles E to Z");
+      var params = {
+          TableName: "MovieTable",
+          ProjectionExpression: "#yr, title, genre, star",
+          //KeyConditionExpression: "#yr = :yr and #tt = :ti",
+          KeyConditionExpression: "#yr = :yr and #tt = :tz",
+          ExpressionAttributeNames: {
+              "#yr": "filmYear",
+              "#tt": "title"
+          },
+          ExpressionAttributeValues: {
+              ":yr": 1990, // Predator 2
+              ":tz": "Predator 2"
+          }
+      };
+      const data = await docClient.query(params).promise();
+      return data.Items;
+  };
+
+
+  23. DynamoDB complex query
+
+  exports.handler = async (event, context, callback) => {
+      var AWS = require("aws-sdk");
+      AWS.config.update({
+          region: "us-east-1"
+      });
+      var docClient = new AWS.DynamoDB.DocumentClient();
+      console.log("Querying for movies from 1990 - titles E to Z");
+      var params = {
+          TableName: "MovieTable",
+          ProjectionExpression: "#yr, title, genre, star",
+          //KeyConditionExpression: "#yr = :yr and #tt = :ti",
+          KeyConditionExpression: "#yr = :yr and #tt between :ti and :tz",
+          ExpressionAttributeNames: {
+              "#yr": "filmYear",
+              "#tt": "title"
+          },
+          ExpressionAttributeValues: { // Why complex? Well it looks easy but it is not.
+              ":yr": 1990,
+              ":ti": "E", // Everything after E is included. But that excludes Dances With Wolves.
+              ":tz": "P" // A film called "P" will be included but "Pa", "P2" and "Predator 2" will not.
+          } // Use this guide for complex expressions : https://www.dynamodbguide.com/querying/
+      };
+      const data = await docClient.query(params).promise();
+      return data.Items;
+  }; {
+
+
+
+    24. DynamoDB delete item
+
+    exports.handler = async (event, context, callback) => {
+        var AWS = require('aws-sdk');
+        AWS.config.update({
+            region: 'us-east-1'
+        });
+        var tableName = "MovieTable";
+        var dynamoDB = new AWS.DynamoDB.DocumentClient;
+        var fileItem = {
+            Key: {
+                title: 'The Wizard of Oz',
+                'filmYear': 1939
+            },
+            TableName: tableName,
+        };
+        await dynamoDB.delete(fileItem).promise();
+    };
+
+
+    25. DynamoDB delete table
+
+    exports.handler = async (event, context, callback) => {
+        var AWS = require('aws-sdk');
+        // Set the region
+        AWS.config.update({
+            region: 'us-east-1'
+        });
+        // Create the DynamoDB service object
+        var ddb = new AWS.DynamoDB({
+            apiVersion: '2012-08-10'
+        });
+        var params = {
+            TableName: 'MovieTable'
+        };
+        // Call DynamoDB to delete the specified table
+        await ddb.deleteTable(params).promise();
+    };
+
+
+    26. Spot instance request by AZ.
+
+    exports.handler = function(event, context) {
+        const AWS = require('aws-sdk');
+        const ec2 = new AWS.EC2({
+            region: 'us-east-1'
+        });
+        var params = {
+            InstanceCount: 1,
+            LaunchSpecification: {
+                IamInstanceProfile: {
+                    Arn: "arn:aws:iam::011698514599:instance-profile/lambda-ec2-access-role"
+                },
+                ImageId: "ami-0a887e401f7654935",
+                InstanceType: "t2.micro",
+                KeyName: "my-key-pair",
+                Placement: {
+                    AvailabilityZone: "us-east-1a"
+                },
+                SecurityGroupIds: [
+                    "default"
+                ]
+            },
+            SpotPrice: "0.03",
+            Type: "one-time" // ← "persistent" is an alternative to one-time
+        };
+        ec2.requestSpotInstances(params, function(err, data) {
+            if (err) console.log(err, err.stack); // an error occurred
+            else console.log(data); // successful response
+            /* data = { } */
+        });
+    };
+
+
+    27. Spot instance request by Subnet
+
+    exports.handler = function(event, context) {
+        // TODO implement
+        const AWS = require('aws-sdk');
+        const ec2 = new AWS.EC2({
+            region: 'us-east-1'
+        });
+        var params = {
+            InstanceCount: 1,
+            LaunchSpecification: {
+                IamInstanceProfile: {
+                    Arn: "arn:aws:iam::011698514599:instance-profile/lambda-ec2-access-role"
+                },
+                ImageId: "ami-0a887e401f7654935",
+                InstanceType: "t2.micro",
+                SecurityGroupIds: [
+                    "default"
+                ],
+                SubnetId: "subnet-86a866e0"
+            },
+            SpotPrice: "0.050",
+            Type: "one-time" // ← "persistent" is an alternative to one-time
+        };
+        ec2.requestSpotInstances(params, function(err, data) {
+            if (err) console.log(err, err.stack); // an error occurred
+            else console.log(data); // successful response
+            /*
+            data = {
+            }
+            */
+        });
+    };
+
+
+    28. Spot instance cancel
+
+    For each spot lambda you need to add permissions.Go to appendix A(section 51) at the end of the book, before continuing.Set
+    default Lambda
+    default time to 15 seconds.
+    This example cancels the single spot instance request, the one which we created in the previous section.
+    You will need the sir - identifier from the previous section.This method also requires you attach the AmazonEC2FULLACCESS Policy to the lambda execution role.
+    AmazonEC2FullAccess does the trick, but
+    if you are feeling like it,
+    try a fine grained alternative to the AmazonEC2FullAccess permission.
+    exports.handler = async (event) => {
+        const AWS = require('aws-sdk');
+        const ec2 = new AWS.EC2({
+            region: 'us-east-1'
+        });
+        var sirStr = "sir-yzihjykg";
+        var params = {
+            SpotInstanceRequestIds: [
+                sirStr
+            ]
+        };
+        await ec2.cancelSpotInstanceRequests(params).promise();
+    };
+
+
+    29. Spot fleet creation
+
+    exports.handler = async (event) => {
+        const AWS = require('aws-sdk');
+        const ec2 = new AWS.EC2({
+            region: 'us-east-1'
+        });
+        var params = {
+            SpotFleetRequestConfig: {
+                AllocationStrategy: "diversified",
+                IamFleetRole: "arn:aws:iam::011698514599:role/aws-ec2-spot-fleet-tagging-role",
+                LaunchSpecifications: [{ // Three machines of 2 types on three separate subnets...
+                        ImageId: "ami-0a887e401f7654935", // <== Different instance type to the ones below, adding in different machines increases fulfilment chances, a lot.
+                        InstanceType: "t2.micro",
+                        SubnetId: "subnet-86a866e0"
+                    },
+                    {
+                        ImageId: "ami-00068cd7555f543d5",
+                        InstanceType: "c5a.large",
+                        SubnetId: "subnet-81b6a4bf"
+                    },
+                    {
+                        ImageId: "ami-00068cd7555f543d5", // <== Same instance type as the one above, but ...
+                        InstanceType: "c5a.large",
+                        SubnetId: "subnet-8479e7c9" // <== ... a different subnet
+                    }
+                ],
+                SpotPrice: "0.70",
+                TargetCapacity: 3 // Capacity amount required - we can see the SFR at the bottom and the 3 spot instances fulfilled on rows 1,2,3 below.
+            }
+        };
+        await ec2.requestSpotFleet(params).promise();
+    };
+
+
+    30. Spot fleet scaling(modify) scale out
+
+    Here we demonstrate both aspects.
+    Scale In(From 3 to 5) Scale Out(from 5 to 1)
+    exports.handler = async (event, context, callback) => {
+        const AWS = require('aws-sdk');
+        const ec2 = new AWS.EC2({
+            region: 'us-east-1'
+        });
+        var params = {
+            SpotFleetRequestId: "sfr-1da2c484-f4e9-4547-96ca-029769ae21e6",
+            TargetCapacity: 5
+        };
+        await ec2.modifySpotFleetRequest(params).promise();
+    };
+
+
+    31. Spot fleet scaling(modify) scale in
+
+        exports.handler = async (event, context, callback) => {
+            const AWS = require('aws-sdk');
+            const ec2 = new AWS.EC2({
+                region: 'us-east-1'
+            });
+            var params = {
+                SpotFleetRequestId: "sfr-1da2c484-f4e9-4547-96ca-029769ae21e6",
+                TargetCapacity: 1
+            };
+            await ec2.modifySpotFleetRequest(params).promise();
+        };
+
+
+    32. Spot fleet deletion 1: full[Deletes everything, the SFR and all related instances.]
+
+    exports.handler = async (event, context, callback) => {
+        const AWS = require('aws-sdk');
+        const ec2 = new AWS.EC2({
+            region: 'us-east-1'
+        });
+        var params = {
+            SpotFleetRequestIds: [
+                "sfr-1da2c484-f4e9-4547-96ca-029769ae21e6"
+            ],
+            TerminateInstances: true // <<Terminate = TRUE for instances and the sfr goes down.
+        };
+        await ec2.cancelSpotFleetRequests(params).promise();
+    };
+
+
+    33. Spot fleet deletion 2: partial[Deletes the SFR, but leaves the instances behind.]
+
+    exports.handler = async (event, context, callback) => {
+        const AWS = require('aws-sdk');
+        const ec2 = new AWS.EC2({
+            region: 'us-east-1'
+        });
+        var params = {
+            SpotFleetRequestIds: [
+                "sfr-1da2c484-f4e9-4547-96ca-029769ae21e6"
+            ],
+            TerminateInstances: false // <<Terminate (instances) = false - the but the sfr goes down
+        };
+        await ec2.cancelSpotFleetRequests(params).promise();
+    };
+
+
+    34. S3 create bucket - locale specific
+
+    exports.handler = function(event, context, callback) {
+        var AWS = require('aws-sdk');
+        AWS.config.region = 'us-east-1';
+        var s3 = new AWS.S3({
+            apiVersion: '2006-03-01'
+        });
+        var params = {
+            Bucket: "q9wer9348r34444r86668y34r3sd999ciuh9t897789", // <-- change this !! All buckets are unique!
+            CreateBucketConfiguration: {
+                LocationConstraint: "eu-west-1"
+            }
+        };
+        s3.createBucket(params).promise();
+    };
+
+
+    35. S3 create bucket - no locale
+
+    exports.handler = function(event, context, callback) {
+        var AWS = require('aws-sdk');
+        AWS.config.region = 'us-east-1';
+        var s3 = new AWS.S3({
+            apiVersion: '2006-03-01'
+        });
+        var params = {
+            Bucket: "q9wer9348r34444r88y34r3sd5559ciuh9t897789", // <-- change this !! All buckets are unique!
+        };
+        s3.createBucket(params).promise();
+    };
+
+
+    36. S3 list buckets in a region
+
+    exports.handler = function(event, context, callback) {
+        var AWS = require('aws-sdk');
+        // Set the region
+        AWS.config.update({
+            region: "us-east-1"
+        });
+        var s3 = "";
+        // Create S3 service object
+        s3 = new AWS.S3({
+            apiVersion: '2006-03-01'
+        });
+        // Call S3 to list the buckets
+        s3.listBuckets(function(err, data) {
+            if (err) {
+                console.log("Error", err);
+            } else {
+                console.log("Success", data.Buckets);
+            }
+        });
+    };
+
+
+    37. S3 list objects
+
+    exports.handler = function(event, context, callback) {
+        var AWS = require('aws-sdk');
+        // Set the region
+        AWS.config.update({
+            region: "us-east-1"
+        });
+        // Create S3 service object
+        const s3 = new AWS.S3({
+            apiVersion: '2006-03-01'
+        });
+        // Create the parameters for calling listObjects
+        var bucketParams = {
+            Bucket: "secobucket",
+        };
+        // Call S3 to obtain a list of the objects in the bucket
+        s3.listObjects(bucketParams, function(err, data) {
+            if (err) {
+                console.log("Error", err);
+            } else {
+                console.log("Success", data);
+            }
+        });
+    };
+
+
+    38. S3 delete objects
+
+    exports.handler = function(event, context, callback) {
+        var AWS = require('aws-sdk');
+        AWS.config.region = 'us-east-1';
+        var s3 = new AWS.S3();
+        var params = {
+            Bucket: "secobucket",
+            Key: "aurora23.mp4"
+        };
+        s3.deleteObject(params).promise();
+    };
+
+
+    39. S3 delete bucket
+
+    exports.handler = function(event, context, callback) {
+        var AWS = require('aws-sdk');
+        AWS.config.region = 'us-east-1';
+        var s3 = new AWS.S3({
+            apiVersion: '2006-03-01'
+        });
+        var params = {
+            Bucket: "exam6787687687868pl789bhebucket"
+        };
+        s3.deleteBucket(params).promise();
+    };
+
+
+    40. SNS topics - creating
+
+    exports.handler = async (event, context, handler) => {
+        var AWS = require('aws-sdk');
+        AWS.config.update({
+            region: 'us-east-1'
+        });
+        var sns = new AWS.SNS({
+            apiVersion: '2010-08-01'
+        });
+        var params = {
+            Name: 'tb5-topic', // required
+            Attributes: {
+                'DisplayName': "thunderbird5",
+            },
+            Tags: [{
+                Key: 'Name',
+                Value: "look-in-the-tags-5"
+            }]
+        };
+        await sns.createTopic(params).promise();
+    };
+
+    41. SNS topics - deleting
+
+    exports.handler = async (event, context, handler) => {
+        var AWS = require('aws-sdk');
+        AWS.config.update({
+            region: 'us-east-1'
+        });
+        var sns = new AWS.SNS({
+            apiVersion: '2010-08-01'
+        });
+        var params = {
+            TopicArn: "arn:aws:sns:us-east-1:011698514599:tb5-topic"
+        };
+        await sns.deleteTopic(params).promise();
+    };
+
+
+
+    42. SNS add subscriptions
+
+    exports.handler = async (event, context, handler) => {
+        var AWS = require('aws-sdk');
+        AWS.config.update({
+            region: 'us-east-1'
+        });
+        var sns = new AWS.SNS({
+            apiVersion: '2010-08-01'
+        });
+        var params = {
+            Protocol: 'EMAIL',
+            TopicArn: 'arn:aws:sns:us-east-1:011698514599:thunderbirds',
+            Endpoint: 'your-email-addy@gmail.com',
+            ReturnSubscriptionArn: true
+        };
+        await sns.subscribe(params).promise();
+    };
+
+
+    43. SNS delete subscriptions
+    exports.handler = async (event, context, handler) => {
+        var AWS = require('aws-sdk');
+        AWS.config.update({
+            region: 'us-east-1'
+        });
+        var sns = new AWS.SNS({
+            apiVersion: '2010-08-01'
+        });
+        var params = {
+            SubscriptionArn: 'arn:aws:sns:us-east-1:011698514599:s1:63a74b59-0416-4baf-bcdd-c5cfc5c9679a'
+        };
+        await sns.unsubscribe(params).promise();
+    };
+
+
+    44. SNS publish
+
+    exports.handler = async (event, context, handler) => {
+        var AWS = require('aws-sdk');
+        AWS.config.update({
+            region: 'us-east-1'
+        });
+        var sns = new AWS.SNS({
+            apiVersion: '2010-08-01'
+        });
+        var params = {
+            Message: 'Lots of things to say. Many words. Lots more letters....',
+            Subject: 'My subject is SNS things.',
+            TopicArn: 'arn:aws:sns:us-east-1:011698514599:thunderbirds',
+        };
+        await sns.publish(params).promise();
+    };
+
+
+    45. SNS subscribe and publish SMS text messages
+
+    exports.handler = async (event, context, handler) => {
+        var AWS = require('aws-sdk');
+        AWS.config.update({
+            region: 'us-east-1'
+        });
+        var sns = new AWS.SNS({
+            apiVersion: '2010-08-01'
+        });
+        var params = {
+            Protocol: 'SMS',
+            TopicArn: 'arn:aws:sns:us-east-1:011698514599:thunderbirds',
+            Endpoint: '1-760-917-2847', // <-- Add the country code in
+            ReturnSubscriptionArn: true
+        };
+        await sns.subscribe(params).promise();
+    };
+
+    45 A.SMS Publish message
+
+    exports.handler = async (event, context, handler) => {
+        var AWS = require('aws-sdk');
+        AWS.config.update({
+            region: 'us-east-1'
+        });
+        var sns = new AWS.SNS({
+            apiVersion: '2010-08-01'
+        });
+        var params = {
+            Message: 'Lots of SMS things to say. Many words. Lots more letters....',
+            TopicArn: 'arn:aws:sns:us-east-1:011698514599:thunderbirds'
+        };
+        await sns.publish(params).promise();
+    };
+
+
+    46. SNS With Lambda
+
+
+    exports.handler = async (event, context, handler) => {
+        var AWS = require('aws-sdk');
+        AWS.config.update({
+            region: 'us-east-1'
+        });
+        var sns = new AWS.SNS({
+            apiVersion: '2010-08-01'
+        });
+        var params = {
+            Protocol: 'LAMBDA',
+            TopicArn: 'arn:aws:sns:us-east-1:011698514599:thunderbirds',
+            Endpoint: 'arn:aws:lambda:us-east-1:011698514599:function:sfr-create',
+            ReturnSubscriptionArn: true
+        };
+        await sns.subscribe(params).promise();
+    };
+    Check the lambda subscription exists:
+
+
+        47. CloudWatch create alarm
+
+    exports.handler = async (event, context, callback) => {
+        // Load the AWS SDK for Node.js
+        var AWS = require('aws-sdk');
+        // Set the region
+        AWS.config.update({
+            region: 'us-east-1'
+        });
+        // Create CloudWatch service object
+        var cw = new AWS.CloudWatch({
+            apiVersion: '2010-08-01'
+        });
+        var params = {
+            AlarmName: 'Web_Server_CPU_Utilization', // <-- give it a similar name
+            ComparisonOperator: 'GreaterThanThreshold',
+            EvaluationPeriods: 1,
+            MetricName: 'CPUUtilization',
+            Namespace: 'AWS/EC2',
+            Period: 60,
+            Statistic: 'Average',
+            Threshold: 70.0,
+            ActionsEnabled: false,
+            AlarmDescription: 'Alarm when server CPU exceeds 70%',
+            Dimensions: [{
+                Name: 'InstanceId',
+                Value: 'i-05bd0f5eac2563ad4' // <-- this needs to be a running instance ID
+            }, ],
+            Unit: 'Percent'
+        };
+        await cw.putMetricAlarm(params).promise();
+    };
+
+
+    48. CloudWatch describe alarms
+
+    exports.handler = async (event, context, handler) => {
+        var AWS = require('aws-sdk');
+        // Set the region
+        AWS.config.update({
+            region: 'us-east-1'
+        });
+        // Create CloudWatch service object
+        var cw = new AWS.CloudWatch({
+            apiVersion: '2010-08-01'
+        });
+        var params = {
+            StateValue: 'OK' // Either of [INSUFFICIENT_DATA, ALARM, OK]
+        };
+        const data = cw.describeAlarms(params).promise();
+        return data;
+    };
+
+
+    49. CloudWatch getMetricStatistics
+
+    exports.handler = async (event, context, handler) => {
+        var AWS = require('aws-sdk');
+        AWS.config.update({
+            region: 'us-east-1'
+        });
+        var cw = new AWS.CloudWatch({
+            apiVersion: '2010-08-01'
+        });
+        var params = {
+            Namespace: 'AWS/EC2', // <-- EC2 is our metric category
+            MetricName: 'CPUUtilization', // <-- our metric name in CloudWatch
+            Period: '300', // <-- in CloudWatch we find 5 minutes intervals
+            StartTime: '2020-10-03T03:08:36Z',
+            EndTime: '2020-10-03T16:23:36Z', // <-- Alter these! Remember UTC from local
+            Dimensions: [{
+                Name: 'InstanceId',
+                Value: 'i-0fe301f4d275eda9c' // <-- our target machine
+            }, ],
+            Statistics: [ // <-- ! Statistics !
+                "Average" // <-- In many of the examples Statistics is followed by count
+            ] // <-- if we added count here it would produce zero output ...
+        };
+        const data = cw.getMetricStatistics(params).promise();
+        return data;
+    };
+
+
+    50. CloudWatch setAlarmState
+
+    exports.handler = async (event, context, handler) => {
+        var AWS = require('aws-sdk');
+        AWS.config.update({
+            region: 'us-east-1'
+        });
+        var cw = new AWS.CloudWatch({
+            apiVersion: '2010-08-01'
+        });
+        var params = {
+            AlarmName: 'a1', // required
+            StateReason: "", // required CAN BE BLANK ""
+            StateValue: "OK", // change your alarm to OK | ALARM | INSUFFICIENT_DATA
+            StateReasonData: ""
+        };
+        const data = cw.setAlarmState(params).promise();
+        return data;
+    };
